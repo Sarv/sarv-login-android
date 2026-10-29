@@ -25,6 +25,7 @@ protocol and rules as the web SDK [sarv-login-js](https://github.com/Sarv/sarv-l
 ## Contents
 
 - [Requirements](#requirements)
+- [Example app](#example-app)
 - [How it works](#how-it-works)
 - [1. Register a public app](#1-register-a-public-app)
 - [2. Install](#2-install)
@@ -57,6 +58,26 @@ protocol and rules as the web SDK [sarv-login-js](https://github.com/Sarv/sarv-l
 - Android Gradle Plugin 8.x, JDK 17, Kotlin with coroutines (the API is `suspend`).
 - A browser on the device (Chrome, Firefox, Samsung Internet, … — any Custom Tabs browser).
 - A Sarv developer account to register the app.
+
+## Example app
+
+[`example/`](example) is a small app built on this library: sign in, restore the session
+at launch, show the profile and token state, get a fresh access token, and sign out. It
+also shows the redirect-scheme placeholder and the backup rules in place.
+
+1. Register a public app on the Sarv developer dashboard with the redirect URI
+   `com.sarv.authexample:/oauth2redirect`. To use another one, change `REDIRECT_URI` and the
+   `sarvAuthRedirectScheme` placeholder in `example/build.gradle.kts` together.
+2. Set your client id in `example/src/main/java/com/sarv/authexample/ExampleApp.kt`.
+3. Open this folder in Android Studio and run the `example` configuration, or:
+
+   ```sh
+   ./gradlew :example:installDebug
+   ```
+
+The app depends on the library module directly (`project(":sarvauth")`), so SDK changes
+show up in the app straight away. Until a client id is set, the app runs but Sarv rejects
+the sign-in.
 
 ## How it works
 
@@ -143,7 +164,9 @@ android {
 ```
 
 It must be lowercase and identical to the redirect URI's scheme, or the browser shows the
-result but never returns to the app. The library also declares the `INTERNET` permission
+result but never returns to the app. If it's missing, the build stops with *"Attribute
+data@scheme … requires a placeholder substitution but no value for
+<sarvAuthRedirectScheme> is provided"*. The library also declares the `INTERNET` permission
 and the Custom Tabs `<queries>` entry needed on Android 11+; you don't add them.
 
 ## 4. Exclude tokens from backups
@@ -532,10 +555,10 @@ Nothing to add. The library uses no reflection and ships its own consumer rules.
 ## Development
 
 ```sh
-gradle wrapper            # once, to add the Gradle wrapper
 ./gradlew :sarvauth:testDebugUnitTest
 ./gradlew :sarvauth:assembleRelease
 ./gradlew :sarvauth:publishToMavenLocal
+./gradlew :example:assembleDebug
 ```
 
 ## License

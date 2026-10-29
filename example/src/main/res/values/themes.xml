@@ -1,0 +1,17 @@
+<resources>
+    <style name="Theme.SarvAuthExample" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorPrimary">#3069B0</item>
+        <item name="colorPrimaryDark">#245289</item>
+        <item name="colorAccent">#3069B0</item>
+    </style>
+
+    <style name="SectionTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">SarvAuth Example</string>
+    <string name="welcome">Welcome</string>
+    <string name="welcome_subtitle">Sign in with your Sarv account to continue.</string>
+    <string name="config_warning">Set your client id in ExampleApp.kt</string>
+    <string name="login_with_sarv">Login with Sarv</string>
+    <string name="sign_in_failed">Sign in failed</string>
+    <string name="profile">Profile</string>
+    <string name="tokens">Tokens</string>
+    <string name="reload_profile">Reload profile</string>
+    <string name="get_access_token">Get access token</string>
+    <string name="sign_out">Sign out</string>
+    <string name="token_ready">Access token ready (%1$s…)</string>
+    <string name="session_ended">Your session has ended. Please sign in again.</string>
+</resources>

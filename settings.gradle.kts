@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "sarvauth-android"
 include(":sarvauth")
+include(":example")
