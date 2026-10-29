@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SarvLoginButton">
+        <attr name="android:text" />
+        <attr name="sarvVariant" format="enum">
+            <enum name="brand" value="0" />
+            <enum name="surface" value="1" />
+        </attr>
+        <attr name="sarvSize" format="enum">
+            <enum name="small" value="0" />
+            <enum name="medium" value="1" />
+            <enum name="large" value="2" />
+        </attr>
+        <attr name="sarvTheme" format="enum">
+            <enum name="auto" value="0" />
+            <enum name="light" value="1" />
+            <enum name="dark" value="2" />
+        </attr>
+    </declare-styleable>
+</resources>
