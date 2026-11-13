@@ -321,7 +321,9 @@ lifecycleScope.launch {
 3. Makes the next sign-in ask for the password. Sarv's sign-out page only redirects to an
    `https://` URL, so it can't return to the app; instead the **next sign-in sends
    `prompt=login`**. If you set an https `postLogoutRedirectUri`, `signOut(activity)` also
-   opens Sarv's sign-out page in a Custom Tab (the user closes it when done).
+   opens Sarv's sign-out page in a Custom Tab (the user closes it when done). It sends the
+   ID token as `id_token_hint`, so Sarv signs out at once instead of asking "Sign out of
+   Sarv?" first.
 
 `signOut(endSarvSession = false)` only revokes and clears; the next sign-in may then reuse
 the browser session without a password.
@@ -535,7 +537,7 @@ Nothing to add. The library uses no reflection and ships its own consumer rules.
 | `suspend fun fetchUser(): SarvUser` | `/api/oauth/userinfo`. |
 | `suspend fun revoke(token, hint): Boolean` | `false` = nothing to revoke (already expired or rotated). |
 | `suspend fun signOut(context: Context? = null, endSarvSession: Boolean = true)` | Revoke, clear, end the session. |
-| `fun logoutUrl(state: String? = null): String?` | Sarv's end-session URL; null without an https `postLogoutRedirectUri`. |
+| `fun logoutUrl(state: String? = null, idTokenHint: String? = tokens?.idToken): String?` | Sarv's end-session URL, with the stored ID token as `id_token_hint` unless you pass one; null without an https `postLogoutRedirectUri`. |
 
 | Type | |
 | --- | --- |

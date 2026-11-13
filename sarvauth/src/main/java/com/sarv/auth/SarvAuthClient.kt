@@ -168,7 +168,8 @@ class SarvAuthClient internal constructor(
      * With [endSarvSession] (the default) the next sign-in also asks for the
      * password (`prompt=login`), and — when an https
      * [SarvAuthConfiguration.postLogoutRedirectUri] is set and [context] is
-     * given — Sarv's sign-out page is opened in a Custom Tab.
+     * given — Sarv's sign-out page is opened in a Custom Tab, with the ID
+     * token as `id_token_hint` so Sarv signs out without asking first.
      */
     suspend fun signOut(context: Context? = null, endSarvSession: Boolean = true) {
         val current = tokens
@@ -179,7 +180,8 @@ class SarvAuthClient internal constructor(
             }
         if (!endSarvSession) return
         promptLoginOnNextSignIn = true
-        val url = logoutUrl()
+        // The tokens are already cleared, so the hint comes from the copy taken above.
+        val url = logoutUrl(idTokenHint = current?.idToken)
         if (context != null && url != null) runCatching { Authorizer.open(context, url) }
     }
 
@@ -187,12 +189,19 @@ class SarvAuthClient internal constructor(
      * Sarv's end-session URL, or null without an https
      * [SarvAuthConfiguration.postLogoutRedirectUri] (Sarv won't redirect a
      * custom scheme after sign-out).
+     *
+     * [idTokenHint] defaults to the stored ID token. It proves the sign-out
+     * comes from the app the user signed in to: with it, Sarv (server 1.4.0
+     * and later) ends the session at once; without it, Sarv first asks the
+     * user "Sign out of Sarv?". Older servers ignore it.
      */
-    fun logoutUrl(state: String? = null): String? {
+    @JvmOverloads
+    fun logoutUrl(state: String? = null, idTokenHint: String? = tokens?.idToken): String? {
         val returnUri = configuration.postLogoutRedirectUri ?: return null
         val params = buildList {
             add("client_id" to configuration.clientId)
             add("post_logout_redirect_uri" to returnUri)
+            idTokenHint?.let { add("id_token_hint" to it) }
             state?.let { add("state" to it) }
         }
         return configuration.endpoint("api/oauth/logout") + "?" +

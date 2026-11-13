@@ -5,6 +5,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -213,6 +214,20 @@ class ClientTest {
         assertEquals("client-1", q["client_id"])
         assertEquals("https://app.example.com/signed-out", q["post_logout_redirect_uri"])
         assertEquals("s", q["state"])
+        assertFalse("id_token_hint" in q)
+    }
+
+    @Test fun logoutUrlSendsTheStoredIdTokenAsHint() {
+        val httpsConfig = SarvAuthConfiguration(
+            "client-1", "com.sarv.test:/oauth2redirect", postLogoutRedirectUri = "https://app.example.com/signed-out",
+        )
+        val store = InMemoryTokenStore(
+            SarvTokens(accessToken = "a", refreshToken = "r", idToken = "id-1", scope = null, expiresAtMillis = Long.MAX_VALUE)
+        )
+        val client = SarvAuthClient(httpsConfig, store, OAuthHttp(httpsConfig) { error("unused") }, null)
+        val hint = { url: String? -> AuthorizationRequest.queryParameters(url!!)["id_token_hint"] }
+        assertEquals("id-1", hint(client.logoutUrl()))
+        assertEquals("from-backend", hint(client.logoutUrl(idTokenHint = "from-backend")))
     }
 }
 
