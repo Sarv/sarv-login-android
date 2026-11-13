@@ -32,7 +32,7 @@ kotlin {
 }
 
 dependencies {
-    // In your app: implementation("com.sarv:sarvauth:0.1.0")
+    // In your app: implementation("com.sarv:sarvauth:0.2.0")
     implementation(project(":sarvauth"))
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")

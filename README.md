@@ -13,7 +13,7 @@ protocol and rules as the web SDK [sarv-login-js](https://github.com/Sarv/sarv-l
 - **Refresh-token rotation** handled: one refresh in flight, the new refresh token saved.
 - Depends only on `androidx.browser`, `androidx.core` and Kotlin coroutines.
 
-> **Status: 0.1.0 preview.** Build it and run the unit tests
+> **Status: 0.2.0 preview.** Build it and run the unit tests
 > (`./gradlew :sarvauth:testDebugUnitTest`) before shipping it in an app.
 
 > Building for iOS? See [sarv-login-ios](https://github.com/Sarv/sarv-login-ios).
@@ -130,7 +130,7 @@ includeBuild("../sarv-login-android")
 ```kotlin
 // app/build.gradle.kts
 dependencies {
-    implementation("com.sarv:sarvauth:0.1.0")
+    implementation("com.sarv:sarvauth:0.2.0")
 }
 ```
 
@@ -143,7 +143,7 @@ cd sarv-login-android && ./gradlew :sarvauth:publishToMavenLocal
 ```kotlin
 // settings.gradle.kts → dependencyResolutionManagement { repositories { mavenLocal(); google(); mavenCentral() } }
 // app/build.gradle.kts
-dependencies { implementation("com.sarv:sarvauth:0.1.0") }
+dependencies { implementation("com.sarv:sarvauth:0.2.0") }
 ```
 
 Your app also needs coroutines to call the `suspend` API (most apps already have it through
