@@ -85,12 +85,13 @@ they are listed here for reference.
 - Access tokens last **30 minutes**; refresh tokens last **30 days** and
   **rotate** on every use.
 
-> [!IMPORTANT]
-> The token and revoke endpoints accept **JSON bodies only**
-> (`Content-Type: application/json`). Standard OAuth clients, AppAuth included,
-> send `application/x-www-form-urlencoded`, which is rejected with `422`. Use
-> AppAuth for the authorization step only, and make the token and revoke calls
-> yourself as shown below.
+> [!NOTE]
+> The token and revoke endpoints accept JSON bodies
+> (`Content-Type: application/json`) on every Sarv server, and
+> `application/x-www-form-urlencoded`, which AppAuth sends, from server 1.4.0
+> (`oauth.sarv.com` runs 1.4.0 or later). This guide makes those calls with
+> JSON so the code works on any Sarv server; AppAuth's own token request works
+> too against 1.4.0 or later.
 
 ## 1. Register a public app
 
@@ -230,10 +231,9 @@ Useful builder options:
 
 ## 5. Exchange the code
 
-> [!WARNING]
-> Do **not** call `authService.performTokenRequest(...)`. It sends a
-> form-encoded body, which this server rejects. Exchange the code with a JSON
-> request instead, as shown below.
+> [!NOTE]
+> `authService.performTokenRequest(...)` sends a form-encoded body, which Sarv
+> accepts from server 1.4.0. The JSON request below works on every Sarv server.
 
 ### Recommended: on your backend
 
@@ -475,8 +475,13 @@ an unrevoked access token expires within 30 minutes on its own.
 Tab:
 
 ```
-https://oauth.sarv.com/api/oauth/logout?client_id=YOUR_CLIENT_ID&post_logout_redirect_uri=https://app.example.com/signed-out
+https://oauth.sarv.com/api/oauth/logout?client_id=YOUR_CLIENT_ID&post_logout_redirect_uri=https://app.example.com/signed-out&id_token_hint=ID_TOKEN
 ```
+
+Add `id_token_hint` with the ID token from sign-in (keep it until sign-out for
+this). It proves the sign-out comes from the app the user signed in to, so Sarv
+ends the session at once. Without it, Sarv 1.4.0 and later first ask the user
+"Sign out of Sarv?" on a confirmation page.
 
 The server only redirects after logout if `post_logout_redirect_uri` is
 `https://` and on the origin of one of the app's registered redirect URIs. With
@@ -502,7 +507,8 @@ for reference.
 
 | Symptom | Cause | Fix |
 | ------- | ----- | --- |
-| `422` with `"Input should be a valid dictionary or object"` | Form-encoded body sent to `/token` or `/revoke` (e.g. `performTokenRequest`) | Send JSON, as in [step 5](#5-exchange-the-code). |
+| `422` with `"Input should be a valid dictionary or object"` | Form-encoded body sent to `/token` or `/revoke` (e.g. `performTokenRequest`) on a Sarv server older than 1.4.0 | Send JSON, as in [step 5](#5-exchange-the-code). |
+| "Sign out of Sarv?" page on sign-out | No `id_token_hint` on the logout URL | Send the ID token from sign-in, as in [step 9](#9-sign-out). |
 | `400 Missing required parameters for authorization_code grant` | `code_verifier` missing at `/token` | Send `response.request.codeVerifier`. |
 | `400 Invalid redirect_uri` | Redirect URI differs from the registered one by even one character | Compare scheme, slashes, and trailing path exactly. |
 | Browser shows the code but never returns to the app | `appAuthRedirectScheme` does not match the redirect URI's scheme, or it has uppercase letters | Make them identical and lowercase. |

@@ -39,8 +39,9 @@ internal class UrlConnectionTransport : HttpTransport {
 }
 
 /**
- * Token / revoke / userinfo calls. Sarv's token endpoint takes a JSON body
- * (not form-encoded) and answers errors as `{"detail": "..."}`.
+ * Token / revoke / userinfo calls. Sends JSON bodies, which every Sarv server
+ * accepts (form bodies need server 1.4.0 or later). Errors carry
+ * `{"detail": "..."}`, plus the RFC 6749 `error` / `error_description` from 1.4.0.
  */
 internal class OAuthHttp(private val configuration: SarvAuthConfiguration, private val transport: HttpTransport) {
 
